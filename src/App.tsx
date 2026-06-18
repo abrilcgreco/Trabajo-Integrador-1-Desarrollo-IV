@@ -4,7 +4,7 @@ import './index.css';
 function App() {
   return (
     <main>
-      <h1>Tienda Deportiva</h1>
+      <h1>Double Sports</h1>
       <ProductList />
     </main>
   );
