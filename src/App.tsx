@@ -1,5 +1,4 @@
-import Product from
-<data value="" />ductList';
+import type ProductList from './Components/ProductList';
 import './index.css';
 
 function App() {
