@@ -1,4 +1,4 @@
-import type ProductList from './Components/ProductList';
+import ProductList from './Components/ProductList';
 import './index.css';
 
 function App() {
