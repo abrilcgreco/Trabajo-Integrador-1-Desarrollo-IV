@@ -1,11 +1,87 @@
-import { useState, createContext, useContext} from 'react'; /*Importa los hooks useState, createContext y useContext de React, que son fundamentales para manejar el estado y la gestión de contexto en la aplicación, permitiendo crear unto para compartir datos entre componentes sin necesidad de pasar props manualmente a través de cada nivel de la estructura de componentes.*/
-const CarContext = createContext([]) 
+import { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import type { Product } from '../Data/Products';
 
-export const useCartContext = () => useContext(CarContext) /*Crea un hook personalizado llamado useCartContext que utiliza el hook useContext para acceder al contexto del carrito de compras, facilitando el acceso a los datos del carrito desde cualquier componente que lo necesite sin tener que pasar props manualmente.*/
+// Un item del carrito = un producto + la cantidad elegida
+export interface CartItem {
+  producto: Product;
+  cantidad: number;
+}
 
-export const CardProvider = (props) => {
-    const [cart, setCart] = useState([]) /*Crea un estado local llamado cart utilizando el hook useState, que se inicializa como un array vacío, y una función setCart para actualizar ese estado. Este estado se utilizará para almacenar los productos que el usuario ha agregado al carrito de compras.*/
-    const addToCart = ({ product, quantity }) => {
-    const IsInCart = cart.find(item => item.product.id === product.id)
-        if IsInCart.product.id === product.id {
-    }
+// Forma del context: qué expone hacia los componentes
+interface CartContextType {
+  items: CartItem[];
+  addToCart: (producto: Product, cantidad: number) => void;
+  removeFromCart: (productId: number) => void;
+  getTotalCart: () => number;
+  getItemSubtotal: (productId: number) => number;
+  clearCart: () => void;
+}
+
+// Creamos el context (arranca undefined para forzar el uso dentro del Provider)
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+// El Provider: envuelve la app y maneja el estado real del carrito
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [items, setItems] = useState<CartItem[]>([]);
+
+  const addToCart = (producto: Product, cantidad: number) => {
+    setItems((prev) => {
+      const existente = prev.find((item) => item.producto.id === producto.id);
+      if (existente) {
+        // Si ya está, le sumo la cantidad
+        return prev.map((item) =>
+          item.producto.id === producto.id
+            ? { ...item, cantidad: item.cantidad + cantidad }
+            : item
+        );
+      }
+      // Si no está, lo agrego nuevo
+      return [...prev, { producto, cantidad }];
+    });
+  };
+
+  const removeFromCart = (productId: number) => {
+    setItems((prev) => prev.filter((item) => item.producto.id !== productId));
+  };
+
+  const getItemSubtotal = (productId: number) => {
+    const item = items.find((i) => i.producto.id === productId);
+    return item ? item.producto.precio * item.cantidad : 0;
+  };
+
+  const getTotalCart = () => {
+    return items.reduce(
+      (total, item) => total + item.producto.precio * item.cantidad,
+      0
+    );
+  };
+
+  const clearCart = () => {
+    setItems([]);
+  };
+
+  return (
+    <CartContext.Provider
+      value={{
+        items,
+        addToCart,
+        removeFromCart,
+        getTotalCart,
+        getItemSubtotal,
+        clearCart,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+}
+
+// Hook tipado: cualquier componente lo usa con useCart()
+export function useCart() {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart debe usarse dentro de un CartProvider');
+  }
+  return context;
+}
