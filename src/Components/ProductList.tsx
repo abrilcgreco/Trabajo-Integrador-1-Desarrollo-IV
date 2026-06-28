@@ -1,4 +1,4 @@
-import { productos } from '../Data/Products';
+import { productos } from '../data/products';
 import ProductCard from './ProductCard';
 
 export default function ProductList() {

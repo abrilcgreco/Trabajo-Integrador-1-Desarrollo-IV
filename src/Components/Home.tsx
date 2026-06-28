@@ -1,10 +1,11 @@
+import ProductList from './ProductList';
 
 const Home = () => {
- return (
- <>
- 
- </>
- );
+  return (
+    <>
+      <ProductList />
+    </>
+  );
 };
 
 export default Home;
