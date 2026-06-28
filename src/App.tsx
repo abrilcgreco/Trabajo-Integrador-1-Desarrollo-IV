@@ -1,21 +1,17 @@
-import Footer from "./Components/Footer"; 
-import ProductList from './Components/ProductList';
 import './index.css';
+import Header from './Components/Header';
+import Footer from "./Components/Footer"; 
+import Home from "./Components/Home"
 
 function App() {
   return (
-    function App() {
-  return (
     <>
+      <Header/>
       <Home />
       <Footer />
     </>
    );
-    <main>
-      <h1>Double Sports</h1>
-      <ProductList />
-    </main>
-  );
+ 
 }
 
 export default App;
