@@ -1,5 +1,5 @@
 import "./Header.css";
-
+import Logo from '../../Img.integrador desarrollo IV/logo-pagina-web.jpeg'
 import { FaSearch } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaBars } from "react-icons/fa";
@@ -8,9 +8,11 @@ function Header() {
   return (
     <header className="header">
 
-      <div className="logo"></div>
-
+     
       <nav>
+        <div className="logo">
+          <img src={Logo} alt="Logo" />
+        </div>
 
         <ul>
 
